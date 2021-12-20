@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐首页</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .bg {
+            background:url("https://bucketworkspace.oss-cn-shanghai.aliyuncs.com/Abstract01.jpg") no-repeat center fixed;
+            background-size:100%;
+        }
+    </style>
+</head>
+<body class="row bg">
+        <div id="rootmusic">
+            <h2 class="text-center" style="margin: 30px">音乐鉴赏</h2>
+            <div id="queryMusicForm" style="margin: 20px 0px" class="row text-center">
+                <div class="col-md-12 text-center">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="singer">演唱者</label>
+                            <input type="text" v-model="singer" class="form-control"
+                                   id="singer" placeholder="请输入歌手名称">
+                            <label for="issuedate">发行日期</label>
+                            <input type="date" v-model="issuedate" class="form-control"
+                                   id="issuedate" >
+                        </div>
+                        <button type="button" @click="queryMusicByParam()" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span> 查询
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="row text-right" style="margin: 10px 0px">
+                <div class="col-md-6 col-md-offset-6" >
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addModal">
+                        <span class="glyphicon glyphicon-plus"></span> 添加歌曲
+                    </button>
+                    <a href="batch" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-upload"></span> 批量删除
+                    </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <table id="order" class="table-bordered table-hover text-center"
+                       style="width: 100%;line-height: 60px;">
+                    <tbody>
+                    <!--表头-->
+                    <tr style="font-weight: bold">
+                        <td>
+                            
+                        </td>
+                        <td>歌曲名称</td>
+                        <td>演唱者</td>
+                        <td>发行日期</td>
+                        <td>播放次数</td>
+                        <td>收藏次数</td>
+                        <td>歌曲时长</td>
+                        <td>操作</td>
+                    </tr>
+
+                    <!--表格数据-->
+                    <tr v-for="music in MusicList" :key="music.id">
+                        <td></td>
+                        <td>{{music.songname}}</td>
+                        <td>{{music.singer}}</td>
+                        <td>{{music.issuedate}}</td>
+                        <td>{{music.playcount}}</td>
+                        <td>{{music.collectcount}}</td>
+                        <td>{{music.playtime}}</td>
+                        <td>
+                            <button ftype="button" class="btn btn-info" @click="edit(order)">编辑</button>
+                            <button ftype="button" class="btn btn-info" @click="cancel(order)">删除</button>
+                            <button ftype="button" class="btn btn-success" @click="editDelivery(order)">播放</button>
+                            <!--<button v-if="music.status!=1" ftype="button" class="btn btn-warning" @click="QuerySJ(order)">收藏</button>
+                            <button v-if="music.status==1" ftype="button" class="btn btn-warning" @click="confirmQuery(order)">取消搜藏</button>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="container">
+                <!--分页导航条-->
+                <div class="row text-center">
+                    <ul class="pagination" style="font-size: 18px">
+                        <li><a href="javascript:;" @click="pre()">&laquo;</a></li>
+
+                        <li v-for="page in pageNumList" :class="{active:page==currentPage}">
+                            <a href="javascript:;" @click="initPoetry(page)">{{page}}</a>
+                        </li>
+
+                        <li><a href="javascript:;" @click="next()">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+        <script>
+            new Vue({
+                el: "#rootmusic",
+                data: {
+                    singer: "",
+                    music: {id:"",songname:"",singer:"",issuedate:"",playcount:"",collectcount:"",playtime:"",url:"",status:""},
+                    issuedate: "",
+                    MusicList: [],
+                    pageNum: 1,
+                    pageNumList: [],
+                    prePage: 1,
+                    nextPage: 1,
+                    currentPage: 1,
+                    totalPage: 1
+                },
+                created() {
+                    console.log(123)
+                    this.initPoetry();
+                },
+                methods: {
+                    initPoetry: function (pageNum) {
+                        this.poetryQueryForm = {};
+                        axios({
+                            url: "/music/musicPage",
+                            method: "get",
+                            params: {
+                                pageNum: pageNum,
+                                singer: this.singer,
+                                issuedate: this.issuedate
+                            }
+                        }).then((resp) => {
+                            console.log(resp);
+                            let data = resp.data;
+                            this.MusicList = data.list;
+                            this.pageNumList = data.navigatepageNums;
+                            this.prePage = data.prePage;
+                            this.nextPage = data.nextPage;
+                            this.currentPage = data.pageNum;
+                            this.totalPage = data.pages;
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    },
+                    //上一页
+                    pre: function () {
+                        this.initPoetry(this.prePage == 0 ? this.totalPage : this.prePage);
+                    },
+                    //下一页
+                    next: function () {
+                        this.initPoetry(this.nextPage == 0 ? 1 : this.nextPage);
+                    },
+                    queryMusicByParam: function () {
+                        this.initPoetry()
+                    }
+                }
+            })
+        </script>
+</body>
+</html>

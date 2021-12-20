@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wnxy.musicdemo.mapper.MusicMapper">
+  <resultMap id="BaseResultMap" type="com.wnxy.musicdemo.entity.Music">
+    <!--@mbg.generated-->
+    <!--@Table tb_music-->
+    <id column="id" property="id" />
+    <result column="songname" property="songname" />
+    <result column="singer" property="singer" />
+    <result column="issuedate" property="issuedate" />
+    <result column="playcount" property="playcount" />
+    <result column="collectcount" property="collectcount" />
+    <result column="playtime" property="playtime" />
+    <result column="url" property="url" />
+    <result column="status" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, songname, singer, issuedate, playcount, collectcount, playtime, url, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from tb_music
+    where id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from tb_music
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wnxy.musicdemo.entity.Music" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into tb_music (songname, singer, issuedate, playcount, collectcount, playtime, 
+      url, `status`)
+    values (#{songname}, #{singer}, #{issuedate}, #{playcount}, #{collectcount}, #{playtime}, 
+      #{url}, #{status})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wnxy.musicdemo.entity.Music" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into tb_music
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="songname != null">
+        songname,
+      </if>
+      <if test="singer != null">
+        singer,
+      </if>
+      <if test="issuedate != null">
+        issuedate,
+      </if>
+      <if test="playcount != null">
+        playcount,
+      </if>
+      <if test="collectcount != null">
+        collectcount,
+      </if>
+      <if test="playtime != null">
+        playtime,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="songname != null">
+        #{songname},
+      </if>
+      <if test="singer != null">
+        #{singer},
+      </if>
+      <if test="issuedate != null">
+        #{issuedate},
+      </if>
+      <if test="playcount != null">
+        #{playcount},
+      </if>
+      <if test="collectcount != null">
+        #{collectcount},
+      </if>
+      <if test="playtime != null">
+        #{playtime},
+      </if>
+      <if test="url != null">
+        #{url},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wnxy.musicdemo.entity.Music">
+    <!--@mbg.generated-->
+    update tb_music
+    <set>
+      <if test="songname != null">
+        songname = #{songname},
+      </if>
+      <if test="singer != null">
+        singer = #{singer},
+      </if>
+      <if test="issuedate != null">
+        issuedate = #{issuedate},
+      </if>
+      <if test="playcount != null">
+        playcount = #{playcount},
+      </if>
+      <if test="collectcount != null">
+        collectcount = #{collectcount},
+      </if>
+      <if test="playtime != null">
+        playtime = #{playtime},
+      </if>
+      <if test="url != null">
+        url = #{url},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wnxy.musicdemo.entity.Music">
+    <!--@mbg.generated-->
+    update tb_music
+    set songname = #{songname},
+      singer = #{singer},
+      issuedate = #{issuedate},
+      playcount = #{playcount},
+      collectcount = #{collectcount},
+      playtime = #{playtime},
+      url = #{url},
+      `status` = #{status}
+    where id = #{id}
+  </update>
+
+  <select id="findMusics" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_music
+    <where>
+      <if test="singerName != null and singerName != ''">
+        AND singer LIKE CONCAT('%', #{singerName,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="parseDate != null">
+        AND issuedate = #{parseDate}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_music
+  </select>
+</mapper>

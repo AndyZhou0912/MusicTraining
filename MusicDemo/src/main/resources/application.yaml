@@ -1,0 +1,47 @@
+aliyun:
+  oss:
+    bucketName: yifangtongxing
+    endpoint: oss-cn-shanghai.aliyuncs.com
+    accessKeyId: LTAI5tSg7i2BZs29oBYhPG8C
+    accessKeySecret: d2vG1ndFbdhCWGr8IpXZUI0pEV4xk0
+spring:
+  application:
+    name: MusicDemo
+  thymeleaf:
+    cache: false
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/wn44?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+management:
+  server:
+    port: 8081
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+
+server:
+  port: 8080
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    lazy-loading-enabled: true
+  type-aliases-package: com.wnxy.entity
+  mapper-locations: classpath:mapper/*.xml
+
+woniu:
+  tokenSecret: wugdqwertqazwsxplmoknYGVRGN
+
